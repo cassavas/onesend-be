@@ -12,6 +12,7 @@ type RegisterPayload = {
   password: string;
   name: string;
 };
+
 export const registerHandler = async (ctx: Context, req: express.Request<any, any, RegisterPayload>, res: express.Response) => {
   if (!req.body.email || !emailValidation(req.body.email)) {
     responseError(new LogError(ErrorVars.E002_EMAIL_INVALID, 'LOGIC'), req, res);
