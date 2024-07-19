@@ -4,4 +4,4 @@
 **/.svn
 **/.hg
 **/node_modules
-app/shared/database/generated
+apps/shared/database/generated
