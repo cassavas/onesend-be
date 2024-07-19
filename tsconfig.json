@@ -17,14 +17,16 @@
     "forceConsistentCasingInFileNames": true,
     "allowJs": true,
     "types": [
-      "bun-types" // add Bun global
+      "bun-types"
     ],
     "baseUrl": ".",
     "paths": {
-      "app/*": ["app/*"],
-      "shared/*": ["app/shared/*"],
-      "rest/*": ["app/rest/*"]
+      "app/*": ["apps/*"],
+      "shared/*": ["apps/shared/*"],
+      "rest/*": ["apps/rest/*"]
     }
   },
-  "exclude": ["app/shared/database/generated"]
+  "exclude": [
+    "apps/shared/database/generated"
+  ]
 }

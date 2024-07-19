@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "./generated/prisma-client"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int       @id @default(autoincrement())
+  publicId    String    @unique @map("public_id")
+  email       String    @unique
+  type        String    @map("type")
+  firstName   String    @map("first_name")
+  lastName    String    @map("last_name")
+  phoneNumber String?   @map("phone_number")
+  address     String?   @map("address")
+  active      Boolean
+  password    String?   @map("password")
+  createdAt   DateTime  @default(now()) @map("created_at")
+  deletedAt   DateTime? @map("deleted_at")
+
+  UserToken UserToken[]
+  Project   Project[]
+
+  @@index([publicId, email])
+  @@map(name: "user")
+}
+
+model UserToken {
+  id        Int      @id @default(autoincrement())
+  publicId  String   @unique @map("public_id")
+  token     String
+  userId    Int      @map("user_id")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  User User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([userId, token])
+  @@map(name: "user_token")
+}
+
+model Project {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @map("public_id")
+  name     String @unique
+
+  sid    String @unique
+  authId String @unique @map("auth_id")
+
+  planId  Int @map("plan_id")
+  userId  Int @map("user_id")
+  balance Int
+
+  Plan    Plan?     @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  User    User      @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Service Service[]
+
+  @@index([sid, publicId])
+  @@map(name: "project")
+}
+
+model Plan {
+  id       Int       @id @default(autoincrement())
+  publicId String    @unique @map("public_id")
+  name     String
+  Project  Project[]
+
+  @@index([publicId])
+  @@map(name: "plan")
+}
+
+model Service {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @map("public_id")
+
+  sid String @unique
+
+  projectId Int @map("project_id")
+
+  Project Project @relation(fields: [projectId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([sid, publicId])
+  @@map(name: "service")
+}
