@@ -70,6 +70,7 @@ model Plan {
   id       Int       @id @default(autoincrement())
   publicId String    @unique @map("public_id")
   name     String
+  pricing  String?
   Project  Project[]
 
   @@index([publicId])

@@ -2,7 +2,7 @@ import { rGetUserByEmail } from 'shared/database/repository/user/get-user-repo';
 import { LogError } from 'shared/error/logError';
 import { ErrorVars } from 'shared/error/errorVars';
 import { insertUserRepo } from 'shared/database/repository/user/insert-user-repo';
-import { MailTransport } from 'shared/config/mailTransport';
+import { MailTransport } from 'shared/provider/mail-transport';
 import { verifySubject } from 'shared/types/const';
 import { verifyTemplate } from 'shared/types/template/verifyEmail';
 import { LoginPayloadResponse } from 'shared/types/auth';

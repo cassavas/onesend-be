@@ -2,7 +2,7 @@ import { PrismaClient } from 'shared/database/generated/prisma-client';
 import log from 'shared/config/logger';
 import winston from 'winston';
 import Crypto from 'shared/helpers/crypto';
-import { MailTransport } from 'shared/config/mailTransport';
+import { MailTransport } from 'shared/provider/mail-transport';
 
 declare global {
   var prisma: PrismaClient;
