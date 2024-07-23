@@ -5,14 +5,15 @@ import { LogError } from 'shared/error/logError';
 import { ErrorVars } from 'shared/error/errorVars';
 import { emailValidation } from 'shared/helpers/function';
 import { responseSuccess } from 'rest/middleware/response/success';
-import { sRegister } from 'shared/services/user/sRegister';
+import { registerService } from 'shared/services/user/register-service';
 
 type RegisterPayload = {
   email: string;
   password: string;
-  name: string;
+  firstName: string;
+  lastName: string;
 };
-export const registerHandler = async (ctx: Context, req: express.Request<any, any, RegisterPayload>, res: express.Response) => {
+export const postSignUpHandler = async (ctx: Context, req: express.Request<any, any, RegisterPayload>, res: express.Response) => {
   if (!req.body.email || !emailValidation(req.body.email)) {
     responseError(new LogError(ErrorVars.E002_EMAIL_INVALID, 'LOGIC'), req, res);
     return;
@@ -23,17 +24,22 @@ export const registerHandler = async (ctx: Context, req: express.Request<any, an
     return;
   }
 
-  if (req.body.password.trim().length < 6) {
+  if (req.body.password.trim().length < 8) {
     responseError(new LogError(ErrorVars.E006_PASSWORD_INVALID, 'LOGIC'), req, res);
     return;
   }
 
-  if (!req.body.name || (req.body.name && !req.body.name.trim())) {
+  if (!req.body.firstName || (req.body.firstName && (!req.body.firstName.trim() || req.body.firstName.trim().length > 50))) {
     responseError(new LogError(ErrorVars.E008_USERNAME_INVALID, 'LOGIC'), req, res);
     return;
   }
 
-  await sRegister(req.body.email, req.body.password, req.body.name);
+  if (!req.body.lastName || (req.body.lastName && (!req.body.lastName.trim() || req.body.lastName.trim().length > 50))) {
+    responseError(new LogError(ErrorVars.E008_USERNAME_INVALID, 'LOGIC'), req, res);
+    return;
+  }
+
+  await registerService(req.body.email, req.body.firstName, req.body.lastName, 'standard', req.body.password);
 
   responseSuccess(req, res, {}, true);
 };

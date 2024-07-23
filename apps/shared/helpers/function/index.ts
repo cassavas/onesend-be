@@ -1,4 +1,5 @@
 import { emailRegex } from 'shared/types/const';
+import { nanoid } from 'nanoid';
 
 export const jsonToMarkdown = (jsonObj: any, depth = 0) => {
   let markdown = '';
@@ -28,4 +29,8 @@ export const jsonToMarkdown = (jsonObj: any, depth = 0) => {
 export const emailValidation = (email: string) => {
   const testInstance = new RegExp(emailRegex);
   return testInstance.test(email);
+};
+
+export const newPublicId = (): string => {
+  return nanoid(15);
 };

@@ -7,12 +7,16 @@ import passport from 'passport';
 
 import { context } from 'rest/middleware/context';
 import { catchHandler } from './middleware/catch-handler';
-import { loginHandler } from 'rest/controler/user/postLoginHandler';
+import { postSignInHandler } from 'rest/controler/auth/post-sign-in-handler';
 import cookieParser from 'cookie-parser';
 import { apiLimiter } from 'rest/config/rateLimit';
 import { cors } from 'rest/config/cors';
-import { registerHandler } from 'rest/controler/user/postSignUpHandler';
+import { postSignUpHandler } from 'rest/controler/auth/post-sign-up-handler';
 import { googleAuth, googleAuthCallback } from 'rest/controler/auth/google-oauth2-handler';
+import { getUserCheckHandler } from 'rest/controler/auth/get-user-check-handler';
+import { auth } from 'rest/middleware/auth/api-auth';
+import { getVerifySignUpHandler } from 'rest/controler/auth/get-verify-sign-up-handler';
+import { deleteSignOutHandler } from 'rest/controler/auth/delete-sign-out-handler';
 
 const app = express();
 
@@ -46,12 +50,19 @@ app.get('/v1/health', (req: express.Request, res: express.Response) => {
 });
 
 app.get('/auth/google', googleAuth);
-app.get('/auth/google/callback', googleAuthCallback);
+app.get('/auth/google/callback', context, googleAuthCallback);
 
-app.post('/v1/login', context, asyncHandler(catchHandler(loginHandler)));
-app.post('/v1/sign-up', context, asyncHandler(catchHandler(registerHandler)));
-app.post('/v1/request-upload/:customer-id');
-app.post('/v1/upload/:customer-id');
-app.post('/v1/requests/:customer-id');
+app.get('/v1/user/check/:email', context, asyncHandler(catchHandler(getUserCheckHandler)));
+
+app.post('/v1/auth/sign-in', context, asyncHandler(catchHandler(postSignInHandler)));
+app.post('/v1/auth/sign-up', context, asyncHandler(catchHandler(postSignUpHandler)));
+app.delete('/v1/auth/sign-out', context, auth, asyncHandler(catchHandler(deleteSignOutHandler)));
+app.get('/v1/auth/verify', context, asyncHandler(catchHandler(getVerifySignUpHandler)));
+
+app.get('/v1/check-auth', context, auth, (req, res) => {
+  res.send({ status: 'ok' });
+});
+
+//global APIs
 
 export default app;

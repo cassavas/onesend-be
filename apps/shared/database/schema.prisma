@@ -30,14 +30,18 @@ model User {
 }
 
 model UserToken {
-  id        Int      @id @default(autoincrement())
-  publicId  String   @unique @map("public_id")
-  token     String
-  userId    Int      @map("user_id")
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @map("public_id")
+  token    String
+  userId   Int    @map("user_id")
+
+  meta      Json?
+  expiredAt DateTime @map("expired_at")
   createdAt DateTime @default(now()) @map("created_at")
 
   User User @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
+  @@unique([token, userId])
   @@index([userId, token])
   @@map(name: "user_token")
 }

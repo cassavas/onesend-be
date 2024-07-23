@@ -1,5 +1,5 @@
 import passport from 'passport';
-import { Strategy as GoogleStrategy, Profile } from 'passport-google-oauth20';
+import { Profile, Strategy as GoogleStrategy } from 'passport-google-oauth20';
 import jwt from 'jsonwebtoken';
 
 passport.use(
@@ -15,13 +15,13 @@ passport.use(
   )
 );
 
-export const generateToken = (user: Profile): string => {
+export const generateToken = (userId: string, firstName: string, lastName: string, email: string): string => {
   const payload = {
-    sub: user.id,
-    name: user.displayName,
-    email: user.emails ? user.emails[0].value : ''
+    userId,
+    firstName,
+    lastName,
+    email
   };
-  console.log(user);
 
-  return jwt.sign(payload, process.env.SECRET_TOKEN as string, { expiresIn: '1h' });
+  return jwt.sign(payload, process.env.SECRET_TOKEN as string, { expiresIn: '30d' });
 };

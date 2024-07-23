@@ -5,14 +5,14 @@ import { LogError } from 'shared/error/logError';
 import { Context } from 'shared/context';
 import { emailValidation } from 'shared/helpers/function';
 import { ErrorVars } from 'shared/error/errorVars';
-import { sLogin } from 'shared/services/user/sLogin';
+import { loginService } from 'shared/services/user/login-service';
 
 type LoginPayload = {
   email: string;
   password: string;
 };
 
-export const loginHandler = async (ctx: Context, req: express.Request<any, any, LoginPayload>, res: express.Response) => {
+export const postSignInHandler = async (ctx: Context, req: express.Request<any, any, LoginPayload>, res: express.Response) => {
   if (!req.body.email || (req.body.email && !emailValidation(req.body.email))) {
     responseError(new LogError(ErrorVars.E002_EMAIL_INVALID, 'LOGIC'), req, res);
     return;
@@ -23,12 +23,12 @@ export const loginHandler = async (ctx: Context, req: express.Request<any, any, 
     return;
   }
 
-  if (req.body.password.length < 6) {
+  if (req.body.password.length < 8) {
     responseError(new LogError(ErrorVars.E006_PASSWORD_INVALID, 'LOGIC'), req, res);
     return;
   }
 
-  const token = await sLogin(req.body.email, req.body.password);
+  const payload = await loginService(req.body.email, req.body.password);
 
-  responseSuccess(req, res, { token });
+  responseSuccess(req, res, payload);
 };
