@@ -52,4 +52,12 @@ export default class Crypto {
 
     return jwt.sign(payload, key, { expiresIn: '30m' });
   }
+
+  public resetPasswordToken(payload: { email: string }, key: string = process.env.SECRET_TOKEN ?? ''): string {
+    if (!key) {
+      throw new LogError('MISSING_KEY');
+    }
+
+    return jwt.sign(payload, key, { expiresIn: '1h' });
+  }
 }
