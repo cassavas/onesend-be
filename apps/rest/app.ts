@@ -17,6 +17,8 @@ import { getUserCheckHandler } from 'rest/controler/auth/get-user-check-handler'
 import { auth } from 'rest/middleware/auth/api-auth';
 import { getVerifySignUpHandler } from 'rest/controler/auth/get-verify-sign-up-handler';
 import { deleteSignOutHandler } from 'rest/controler/auth/delete-sign-out-handler';
+import { getUserProfileHandler } from 'rest/controler/user/get-user-profile-handler';
+import { postUserProfileHandler } from 'rest/controler/user/post-user-profile-handler';
 
 const app = express();
 
@@ -58,6 +60,8 @@ app.post('/v1/auth/sign-in', context, asyncHandler(catchHandler(postSignInHandle
 app.post('/v1/auth/sign-up', context, asyncHandler(catchHandler(postSignUpHandler)));
 app.delete('/v1/auth/sign-out', context, auth, asyncHandler(catchHandler(deleteSignOutHandler)));
 app.get('/v1/auth/verify', context, asyncHandler(catchHandler(getVerifySignUpHandler)));
+app.get('/v1/user/profile', context, auth, asyncHandler(catchHandler(getUserProfileHandler)));
+app.post('/v1/user/update-profile', context, auth, asyncHandler(catchHandler(postUserProfileHandler)));
 
 app.get('/v1/check-auth', context, auth, (req, res) => {
   res.send({ status: 'ok' });
