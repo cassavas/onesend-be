@@ -11,6 +11,7 @@ export type USER = {
 };
 
 export type USER_PROFILE = {
+  id: number;
   firstName: string;
   lastName: string;
   phoneNumber: string | null;
