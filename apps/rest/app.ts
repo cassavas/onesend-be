@@ -18,10 +18,13 @@ import { auth } from 'rest/middleware/auth/api-auth';
 import { getVerifySignUpHandler } from 'rest/controler/auth/get-verify-sign-up-handler';
 import { deleteSignOutHandler } from 'rest/controler/auth/delete-sign-out-handler';
 import { getUserProfileHandler } from 'rest/controler/user/get-user-profile-handler';
-import { postUserProfileHandler } from 'rest/controler/user/post-user-profile-handler';
+import { putUserProfileHandler } from 'rest/controler/user/put-user-profile-handler';
 import { postSetupProjectHandler } from 'rest/controler/project/post-setup-project-handler';
 import { getProjectHandler } from 'rest/controler/project/get-project-handler';
 import { getListProjectHandler } from 'rest/controler/project/get-list-project-handler';
+import { deleteForceLogoutHandler } from 'rest/controler/auth/delete-force-logout-handler';
+import { putResetPasswordHandler } from 'rest/controler/auth/put-reset-password-handler';
+import { postResetPasswordHandler } from 'rest/controler/auth/post-reset-password-handler';
 
 const app = express();
 
@@ -65,12 +68,16 @@ app.delete('/v1/auth/sign-out', context, auth, asyncHandler(catchHandler(deleteS
 app.get('/v1/auth/verify', context, asyncHandler(catchHandler(getVerifySignUpHandler)));
 
 app.get('/v1/user/profile', context, auth, asyncHandler(catchHandler(getUserProfileHandler)));
-app.post('/v1/user/update-profile', context, auth, asyncHandler(catchHandler(postUserProfileHandler)));
+app.put('/v1/user/profile', context, auth, asyncHandler(catchHandler(putUserProfileHandler)));
 
 app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjectHandler)));
 app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));
 app.get('/v1/projects', context, auth, asyncHandler(catchHandler(getListProjectHandler)));
 
+app.delete('/v1/auth/force-logout', context, auth, asyncHandler(catchHandler(deleteForceLogoutHandler)));
+
+app.post('/v1/auth/reset-password', context, asyncHandler(catchHandler(postResetPasswordHandler)));
+app.put('/v1/auth/reset-password', context, asyncHandler(catchHandler(putResetPasswordHandler)));
 //global APIs
 
 export default app;

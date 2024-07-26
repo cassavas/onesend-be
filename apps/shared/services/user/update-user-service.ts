@@ -1,8 +1,9 @@
 import { updateUserProfileRepo } from 'shared/database/repository/user/update-user-profile-repo';
-import { rGetUserByEmail } from 'shared/database/repository/user/get-user-repo';
+import { userValidationById } from 'shared/helpers/validation';
+import { USER_PROFILE } from 'shared/types/user';
 
-export const updateUserService = async (email: string, firstName: string, lastName: string, phoneNumber: string, address: string) => {
-  const user = await rGetUserByEmail(email);
-  // @ts-ignore
-  const updateUser = await updateUserProfileRepo(user.id, firstName, lastName, phoneNumber, address);
+export const updateUserService = async (userId: number, firstName: string, lastName: string, phoneNumber: string, address: string): Promise<USER_PROFILE> => {
+  const user = await userValidationById(userId);
+
+  return updateUserProfileRepo(user.id, firstName, lastName, phoneNumber, address);
 };
