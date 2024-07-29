@@ -8,13 +8,14 @@ import { LogError } from 'shared/error/logError';
 import { ErrorVars } from 'shared/error/errorVars';
 
 export const postResetPasswordHandler = async (ctx: Context, req: express.Request, res: express.Response) => {
-  const email = req.body.email as string;
+  const email = req.body.email as string; // add type at req: express.Request see putResetPasswordHandler
+  // don't use "as string" or as any type if it do not necessary
   if (!email || !emailValidation(email)) {
     responseError(new LogError(ErrorVars.E002_EMAIL_INVALID, 'LOGIC'), req, res);
     return;
   }
 
-  const responseEmail = await verifyResetPassword(email);
+  const responseEmail = await verifyResetPassword(email); // ??
 
-  responseSuccess(req, res, responseEmail, true);
+  responseSuccess(req, res, {}, true); //??
 };

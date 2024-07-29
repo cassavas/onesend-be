@@ -64,6 +64,7 @@ app.delete('/v1/auth/sign-out', context, auth, asyncHandler(catchHandler(deleteS
 app.get('/v1/auth/verify', context, asyncHandler(catchHandler(getVerifySignUpHandler)));
 app.get('/v1/user/profile', context, auth, asyncHandler(catchHandler(getUserProfileHandler)));
 app.post('/v1/user/update-profile', context, auth, asyncHandler(catchHandler(postUserProfileHandler)));
+
 app.post('/v1/user/reset-password', context, asyncHandler(catchHandler(postResetPasswordHandler)));
 app.put('/v1/user/reset-password', context, asyncHandler(catchHandler(putResetPasswordHandler)));
 
