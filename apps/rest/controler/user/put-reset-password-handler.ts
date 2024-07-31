@@ -7,22 +7,23 @@ import { responseSuccess } from 'rest/middleware/response/success';
 import { resetPasswordService } from 'shared/services/auth/reset-password-service';
 import { passwordValidation } from 'shared/helpers/function';
 
-//req: express.Request
 export const putResetPasswordHandler = async (ctx: Context, req: express.Request<any, any, { password?: string }, { token?: string }>, res: express.Response) => {
-  const token = req.query.token;
-  const password = req.body.password;
-  // trim everything here don't repeat
+  const token = req.query.token?.trim();
+  const password = req.body.password?.trim();
 
-  // check (!token, check !password)
+  if (!token) {
+    responseError(new LogError(ErrorVars.E012_INCORRECT_TOKEN, 'LOGIC'), req, res);
+    return;
+  }
 
   const payload = global._crypto.verifyActiveToken(token);
 
-  if (!password || (password && (!passwordValidation(password) || !password.trim()))) {
+  if (!password || (password && !passwordValidation(password))) {
     responseError(new LogError(ErrorVars.E006_PASSWORD_INVALID, 'LOGIC'), req, res);
     return;
   }
 
-  if (password.trim().length < 8) {
+  if (password.length < 8) {
     responseError(new LogError(ErrorVars.E006_PASSWORD_INVALID, 'LOGIC'), req, res);
     return;
   }
