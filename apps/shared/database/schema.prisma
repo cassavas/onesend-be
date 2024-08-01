@@ -49,7 +49,7 @@ model UserToken {
 model Project {
   id       Int    @id @default(autoincrement())
   publicId String @unique @map("public_id")
-  name     String @unique
+  name     String
 
   sid    String @unique
   authId String @unique @map("auth_id")
@@ -58,7 +58,7 @@ model Project {
   userId  Int @map("user_id")
   balance Int
 
-  Plan    Plan?     @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Plan    Plan      @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   User    User      @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   Service Service[]
 

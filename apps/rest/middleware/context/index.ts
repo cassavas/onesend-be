@@ -7,6 +7,7 @@ export const context = async (req: express.Request, res: express.Response, next:
   if (requestId === '') {
     requestId = uuid.v4();
   }
+
   res.locals.ctx = {
     requestId,
     logger: global.logger.child({

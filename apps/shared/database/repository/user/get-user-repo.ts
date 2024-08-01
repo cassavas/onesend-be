@@ -3,3 +3,9 @@ export const rGetUserByEmail = async (email: string) => {
     where: { email }
   });
 };
+
+export const rGetUserById = async (id: number) => {
+  return global.prisma.user.findUnique({
+    where: { id }
+  });
+};

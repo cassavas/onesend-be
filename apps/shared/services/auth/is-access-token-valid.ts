@@ -3,11 +3,11 @@ import { compareAsc } from 'date-fns';
 import { updateExpiredRepo } from 'shared/database/repository/auth/update-expired-repo';
 import { deleteExpiredRepo } from 'shared/database/repository/auth/delete-expired-repo';
 
-export const isAccessTokenValid = async (token: string, email: string): Promise<boolean> => {
+export const isAccessTokenValid = async (token: string, email: string): Promise<null | { expiredAt: Date; User: { id: number; publicId: string; email: string } }> => {
   const tokenRecord = await getTokenRepo(token, email);
 
   if (!tokenRecord) {
-    return false;
+    return null;
   }
 
   const currentDate = new Date();
@@ -16,7 +16,7 @@ export const isAccessTokenValid = async (token: string, email: string): Promise<
 
   if (comparisonResult >= 0) {
     deleteExpiredRepo(token, email);
-    return false;
+    return null;
   }
 
   const expiredDateMinus15Days = new Date(tokenRecord.expiredAt);
@@ -30,5 +30,5 @@ export const isAccessTokenValid = async (token: string, email: string): Promise<
     updateExpiredRepo(token, email, newExpired);
   }
 
-  return true;
+  return tokenRecord;
 };

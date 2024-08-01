@@ -19,8 +19,10 @@ import { getVerifySignUpHandler } from 'rest/controler/auth/get-verify-sign-up-h
 import { deleteSignOutHandler } from 'rest/controler/auth/delete-sign-out-handler';
 import { getUserProfileHandler } from 'rest/controler/user/get-user-profile-handler';
 import { postUserProfileHandler } from 'rest/controler/user/post-user-profile-handler';
-import { putResetPasswordHandler } from 'rest/controler/user/put-reset-password-handler';
-import { postResetPasswordHandler } from 'rest/controler/user/post-reset-password-handler';
+import { postSetupProjectHandler } from 'rest/controler/project/post-setup-project-handler';
+import { getProjectHandler } from 'rest/controler/project/get-project-handler';
+import { putResetPasswordHandler } from 'rest/controler/auth/put-reset-password-handler';
+import { postResetPasswordHandler } from 'rest/controler/auth/post-reset-password-handler';
 
 const app = express();
 
@@ -62,15 +64,17 @@ app.post('/v1/auth/sign-in', context, asyncHandler(catchHandler(postSignInHandle
 app.post('/v1/auth/sign-up', context, asyncHandler(catchHandler(postSignUpHandler)));
 app.delete('/v1/auth/sign-out', context, auth, asyncHandler(catchHandler(deleteSignOutHandler)));
 app.get('/v1/auth/verify', context, asyncHandler(catchHandler(getVerifySignUpHandler)));
+
 app.get('/v1/user/profile', context, auth, asyncHandler(catchHandler(getUserProfileHandler)));
 app.post('/v1/user/update-profile', context, auth, asyncHandler(catchHandler(postUserProfileHandler)));
 
+app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjectHandler)));
+app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));
+// app.get('/v1/check-auth', context, auth, (ctx,req, res) => {
+//   res.send({ status: 'ok' });
+// });
 app.post('/v1/user/reset-password', context, asyncHandler(catchHandler(postResetPasswordHandler)));
 app.put('/v1/user/reset-password', context, asyncHandler(catchHandler(putResetPasswordHandler)));
-
-app.get('/v1/check-auth', context, auth, (req, res) => {
-  res.send({ status: 'ok' });
-});
 
 //global APIs
 

@@ -39,3 +39,7 @@ export const passwordValidation = (password: string) => {
 export const newPublicId = (): string => {
   return nanoid(15);
 };
+
+export const newAppId = () => {
+  return nanoid(60);
+};
