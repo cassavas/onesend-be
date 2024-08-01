@@ -62,28 +62,55 @@ model Project {
   User    User      @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   Service Service[]
 
+  createdAt      DateTime         @default(now()) @map("created_at")
+  deletedAt      DateTime?        @map("deleted_at")
+  ProjectPayment ProjectPayment[]
+
   @@index([sid, publicId])
   @@map(name: "project")
 }
 
+model ProjectPayment {
+  id        Int    @id @default(autoincrement())
+  publicId  String @unique @map("public_id")
+  projectId Int    @map("project_id")
+  planId    Int    @map("plan_id")
+  expired   Int    @map("expired") // Month
+
+  paymentAt DateTime @map("payment_at")
+  createdAt DateTime @default(now()) @map("created_at")
+
+  Project Project @relation(fields: [projectId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  Plan    Plan    @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([publicId, projectId])
+  @@map(name: "project_payment")
+}
+
 model Plan {
-  id       Int       @id @default(autoincrement())
-  publicId String    @unique @map("public_id")
-  name     String
-  pricing  String?
-  Project  Project[]
+  id              Int              @id @default(autoincrement())
+  publicId        String           @unique @map("public_id")
+  name            String
+  messageCommited Int?             @map("message_commited")
+  pricing         String?
+  Project         Project[]
+  ProjectPayment  ProjectPayment[]
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
 
   @@index([publicId])
   @@map(name: "plan")
 }
 
 model Service {
-  id       Int    @id @default(autoincrement())
-  publicId String @unique @map("public_id")
+  id        Int    @id @default(autoincrement())
+  publicId  String @unique @map("public_id")
+  sid       String @unique
+  projectId Int    @map("project_id")
 
-  sid String @unique
-
-  projectId Int @map("project_id")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
 
   Project Project @relation(fields: [projectId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 

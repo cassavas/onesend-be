@@ -21,6 +21,7 @@ import { getUserProfileHandler } from 'rest/controler/user/get-user-profile-hand
 import { postUserProfileHandler } from 'rest/controler/user/post-user-profile-handler';
 import { postSetupProjectHandler } from 'rest/controler/project/post-setup-project-handler';
 import { getProjectHandler } from 'rest/controler/project/get-project-handler';
+import { getListProjectHandler } from 'rest/controler/project/get-list-project-handler';
 
 const app = express();
 
@@ -68,9 +69,7 @@ app.post('/v1/user/update-profile', context, auth, asyncHandler(catchHandler(pos
 
 app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjectHandler)));
 app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));
-// app.get('/v1/check-auth', context, auth, (ctx,req, res) => {
-//   res.send({ status: 'ok' });
-// });
+app.get('/v1/projects', context, auth, asyncHandler(catchHandler(getListProjectHandler)));
 
 //global APIs
 
