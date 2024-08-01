@@ -3,20 +3,22 @@ import { LogError } from 'shared/error/logError';
 import { ErrorVars } from 'shared/error/errorVars';
 
 export default class Crypto {
-  private _algorithm: 'bcrypt' | 'argon2id' | 'argon2d' | 'argon2i';
+  private readonly algorithm: 'bcrypt' | 'argon2id' | 'argon2d' | 'argon2i';
+  private readonly projectAlgorithm: 'bcrypt' | 'argon2id' | 'argon2d' | 'argon2i';
 
   constructor() {
-    this._algorithm = 'argon2id';
+    this.algorithm = 'argon2id';
+    this.projectAlgorithm = 'bcrypt';
   }
 
   public hashPassword(password: string): string {
     return Bun.password.hashSync(password, {
-      algorithm: this._algorithm
+      algorithm: this.algorithm
     });
   }
 
   public comparePassword(password: string, hash: string): boolean {
-    return Bun.password.verifySync(password, hash);
+    return Bun.password.verifySync(password, hash, this.algorithm);
   }
 
   public generateAuthToken(email: string): string {
@@ -25,7 +27,7 @@ export default class Crypto {
     }
 
     return Bun.password.hashSync(`${process.env.SECRET_TOKEN}${email}`, {
-      algorithm: this._algorithm
+      algorithm: this.algorithm
     });
   }
 
@@ -34,7 +36,7 @@ export default class Crypto {
       throw new LogError(ErrorVars.E000_SERVER_ERROR);
     }
 
-    return Bun.password.verifySync(`${process.env.SECRET_TOKEN}${email}`, token);
+    return Bun.password.verifySync(`${process.env.SECRET_TOKEN}${email}`, token, this.algorithm);
   }
 
   public verifyActiveToken(token: string, secretKey: string = process.env.SECRET_TOKEN ?? ''): jwt.JwtPayload {
@@ -51,5 +53,23 @@ export default class Crypto {
     }
 
     return jwt.sign(payload, key, { expiresIn: '30m' });
+  }
+
+  public signProjectAuthToken(): string {
+    if (!process.env.PROJECT_SECRET_TOKEN) {
+      throw new LogError(ErrorVars.E000_SERVER_ERROR);
+    }
+
+    return Bun.password.hashSync(process.env.PROJECT_SECRET_TOKEN, {
+      algorithm: this.projectAlgorithm
+    });
+  }
+
+  public verifyProjectAuthToken(token: string): boolean {
+    if (!process.env.PROJECT_SECRET_TOKEN) {
+      throw new LogError(ErrorVars.E000_SERVER_ERROR);
+    }
+
+    return Bun.password.verifySync(process.env.PROJECT_SECRET_TOKEN, token, this.projectAlgorithm);
   }
 }

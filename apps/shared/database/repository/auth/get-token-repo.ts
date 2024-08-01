@@ -5,6 +5,16 @@ export const getTokenRepo = (token: string, email: string) => {
       User: {
         email: email
       }
+    },
+    select: {
+      expiredAt: true,
+      User: {
+        select: {
+          publicId: true,
+          id: true,
+          email: true
+        }
+      }
     }
   });
 };

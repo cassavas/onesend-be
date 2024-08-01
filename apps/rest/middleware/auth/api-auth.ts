@@ -27,10 +27,16 @@ export const auth = async (req: express.Request, res: express.Response, next: ex
       return;
     }
 
-    if (!(await isAccessTokenValid(token, email))) {
+    const acceptUser = await isAccessTokenValid(token, email);
+
+    if (acceptUser === null) {
       responseError(new LogError(ErrorVars.E001_NOT_PERMISSION, 'AUTHENTICATION'), req, res);
       return;
     }
+
+    res.locals.ctx.email = acceptUser.User.email;
+    res.locals.ctx.userId = acceptUser.User.id;
+    res.locals.ctx.userPublicId = acceptUser.User.publicId;
 
     return next();
   } catch (error) {
