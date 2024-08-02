@@ -23,11 +23,6 @@ export const putResetPasswordHandler = async (ctx: Context, req: express.Request
     return;
   }
 
-  if (password.length < 8) {
-    responseError(new LogError(ErrorVars.E006_PASSWORD_INVALID, 'LOGIC'), req, res);
-    return;
-  }
-
   await resetPasswordService(payload.email, password);
 
   responseSuccess(req, res, {}, true);

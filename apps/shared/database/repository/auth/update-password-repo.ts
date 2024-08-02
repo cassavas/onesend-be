@@ -4,7 +4,7 @@ export const updatePasswordRepo = (id: number, password: string) => {
       id
     },
     data: {
-      password: global._crypto.hashPassword(password ?? '')
+      password: global._crypto.hashPassword(password)
     }
   });
 };

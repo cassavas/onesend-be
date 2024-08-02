@@ -39,7 +39,6 @@
     "googleapis": "^128.0.0",
     "jsonwebtoken": "^9.0.2",
     "nanoid": "^5.0.7",
-    "node-cron": "^3.0.3",
     "nodemailer": "^6.9.7",
     "passport": "^0.7.0",
     "passport-google-oauth2": "^0.2.0",

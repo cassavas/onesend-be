@@ -3,7 +3,7 @@ import express from 'express';
 import { responseError } from 'rest/middleware/response/error';
 import { LogError } from 'shared/error/logError';
 import { ErrorVars } from 'shared/error/errorVars';
-import { emailValidation } from 'shared/helpers/function';
+import { emailValidation, passwordValidation } from 'shared/helpers/function';
 import { responseSuccess } from 'rest/middleware/response/success';
 import { registerService } from 'shared/services/user/register-service';
 
@@ -24,7 +24,7 @@ export const postSignUpHandler = async (ctx: Context, req: express.Request<any, 
     return;
   }
 
-  if (req.body.password.trim().length < 8) {
+  if (!passwordValidation(req.body.password.trim())) {
     responseError(new LogError(ErrorVars.E006_PASSWORD_INVALID, 'LOGIC'), req, res);
     return;
   }

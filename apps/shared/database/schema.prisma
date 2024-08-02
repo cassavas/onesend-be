@@ -62,15 +62,15 @@ model Project {
   User    User      @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   Service Service[]
 
-  createdAt      DateTime         @default(now()) @map("created_at")
-  deletedAt      DateTime?        @map("deleted_at")
-  ProjectPayment ProjectPayment[]
+  createdAt    DateTime       @default(now()) @map("created_at")
+  deletedAt    DateTime?      @map("deleted_at")
+  Subscription Subscription[]
 
   @@index([sid, publicId])
   @@map(name: "project")
 }
 
-model ProjectPayment {
+model Subscription {
   id        Int    @id @default(autoincrement())
   publicId  String @unique @map("public_id")
   projectId Int    @map("project_id")
@@ -84,17 +84,17 @@ model ProjectPayment {
   Plan    Plan    @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Restrict)
 
   @@index([publicId, projectId])
-  @@map(name: "project_payment")
+  @@map(name: "subscription")
 }
 
 model Plan {
-  id              Int              @id @default(autoincrement())
-  publicId        String           @unique @map("public_id")
+  id              Int            @id @default(autoincrement())
+  publicId        String         @unique @map("public_id")
   name            String
-  messageCommited Int?             @map("message_commited")
+  messageCommited Int?           @map("message_commited")
   pricing         String?
   Project         Project[]
-  ProjectPayment  ProjectPayment[]
+  Subscription    Subscription[]
 
   createdAt DateTime  @default(now()) @map("created_at")
   deletedAt DateTime? @map("deleted_at")
@@ -116,4 +116,43 @@ model Service {
 
   @@index([sid, publicId])
   @@map(name: "service")
+}
+
+model Pricing {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @map("public_id")
+  chanel   String
+
+  countryName String @map("country_name")
+  countryCode String @map("country_code")
+
+  carrierCode String @map("carrier_code")
+  carrierName String @map("carrier_name")
+
+  base       Int
+  free       Int
+  standard   Int
+  bussiness  Int
+  enterprise Int
+
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([countryCode, carrierCode, chanel, publicId])
+  @@map(name: "pricing")
+}
+
+model AuthRequest {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @map("public_id")
+  userId   Int    @map("user_id")
+  type     String // verify || reset
+  limit    Int    @default(0)
+
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  @@index([userId, publicId])
+  @@map(name: "auth_request")
 }

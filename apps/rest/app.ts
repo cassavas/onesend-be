@@ -69,14 +69,12 @@ app.get('/v1/auth/verify', context, asyncHandler(catchHandler(getVerifySignUpHan
 app.get('/v1/user/profile', context, auth, asyncHandler(catchHandler(getUserProfileHandler)));
 app.post('/v1/user/update-profile', context, auth, asyncHandler(catchHandler(postUserProfileHandler)));
 
+app.post('/v1/user/reset-password', context, asyncHandler(catchHandler(postResetPasswordHandler)));
+app.put('/v1/user/reset-password', context, asyncHandler(catchHandler(putResetPasswordHandler)));
+
 app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjectHandler)));
 app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));
 app.get('/v1/projects', context, auth, asyncHandler(catchHandler(getListProjectHandler)));
-// app.get('/v1/check-auth', context, auth, (ctx,req, res) => {
-//   res.send({ status: 'ok' });
-// });
-app.post('/v1/user/reset-password', context, asyncHandler(catchHandler(postResetPasswordHandler)));
-app.put('/v1/user/reset-password', context, asyncHandler(catchHandler(putResetPasswordHandler)));
 
 //global APIs
 
