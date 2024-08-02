@@ -43,3 +43,9 @@ export const newPublicId = (): string => {
 export const newAppId = () => {
   return nanoid(60);
 };
+
+export const isToday = (dateToCheck: Date) => {
+  const currentDate = new Date();
+
+  return dateToCheck.getFullYear() === currentDate.getFullYear() && dateToCheck.getMonth() === currentDate.getMonth() && dateToCheck.getDate() === currentDate.getDate();
+};

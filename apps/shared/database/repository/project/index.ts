@@ -4,7 +4,7 @@ import { DEFAULT_PROJECT_BALANCE, FREE_PLAN_ID } from 'shared/types/const';
 
 class ProjectRepository {
   public async listProject(userId: number): Promise<Project[]> {
-    return global.prisma.project.findMany({ where: { userId } });
+    return global.prisma.project.findMany({ where: { userId: userId } });
   }
 
   public async createProject(userId: number, projectName: string): Promise<Project> {
