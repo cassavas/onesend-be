@@ -22,6 +22,8 @@ import { postUserProfileHandler } from 'rest/controler/user/post-user-profile-ha
 import { postSetupProjectHandler } from 'rest/controler/project/post-setup-project-handler';
 import { getProjectHandler } from 'rest/controler/project/get-project-handler';
 import { getListProjectHandler } from 'rest/controler/project/get-list-project-handler';
+import { putResetPasswordHandler } from 'rest/controler/auth/put-reset-password-handler';
+import { postResetPasswordHandler } from 'rest/controler/auth/post-reset-password-handler';
 
 const app = express();
 
@@ -66,6 +68,9 @@ app.get('/v1/auth/verify', context, asyncHandler(catchHandler(getVerifySignUpHan
 
 app.get('/v1/user/profile', context, auth, asyncHandler(catchHandler(getUserProfileHandler)));
 app.post('/v1/user/update-profile', context, auth, asyncHandler(catchHandler(postUserProfileHandler)));
+
+app.post('/v1/user/reset-password', context, asyncHandler(catchHandler(postResetPasswordHandler)));
+app.put('/v1/user/reset-password', context, asyncHandler(catchHandler(putResetPasswordHandler)));
 
 app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjectHandler)));
 app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));

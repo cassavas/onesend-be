@@ -1,4 +1,4 @@
-import { emailRegex } from 'shared/types/const';
+import { emailRegex, passwordRegex } from 'shared/types/const';
 import { nanoid } from 'nanoid';
 
 export const jsonToMarkdown = (jsonObj: any, depth = 0) => {
@@ -31,10 +31,21 @@ export const emailValidation = (email: string) => {
   return testInstance.test(email);
 };
 
+export const passwordValidation = (password: string) => {
+  const testInstance = new RegExp(passwordRegex);
+  return testInstance.test(password);
+};
+
 export const newPublicId = (): string => {
   return nanoid(15);
 };
 
 export const newAppId = () => {
   return nanoid(60);
+};
+
+export const isToday = (dateToCheck: Date) => {
+  const currentDate = new Date();
+
+  return dateToCheck.getFullYear() === currentDate.getFullYear() && dateToCheck.getMonth() === currentDate.getMonth() && dateToCheck.getDate() === currentDate.getDate();
 };
