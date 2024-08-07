@@ -1,7 +1,8 @@
-export const deleteForceLogoutRepo = (userId: number) => {
+export const deleteForceLogoutRepo = (userId: number, token: string) => {
   return global.prisma.userToken.deleteMany({
     where: {
-      userId: userId
+      userId: userId,
+      token: { notIn: [token] }
     }
   });
 };
