@@ -22,6 +22,7 @@ import { postUserProfileHandler } from 'rest/controler/user/post-user-profile-ha
 import { postSetupProjectHandler } from 'rest/controler/project/post-setup-project-handler';
 import { getProjectHandler } from 'rest/controler/project/get-project-handler';
 import { getListProjectHandler } from 'rest/controler/project/get-list-project-handler';
+import { deleteForceLogoutHandler } from 'rest/controler/auth/delete-force-logout-handler';
 
 const app = express();
 
@@ -71,6 +72,7 @@ app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjec
 app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));
 app.get('/v1/projects', context, auth, asyncHandler(catchHandler(getListProjectHandler)));
 
+app.delete('/v1/auth/force-logout', context, auth, asyncHandler(catchHandler(deleteForceLogoutHandler)));
 //global APIs
 
 export default app;
