@@ -22,8 +22,9 @@ model User {
   createdAt   DateTime  @default(now()) @map("created_at")
   deletedAt   DateTime? @map("deleted_at")
 
-  UserToken UserToken[]
-  Project   Project[]
+  UserToken  UserToken[]
+  Project    Project[]
+  OtpHistory OtpHistory[]
 
   @@index([publicId, email])
   @@map(name: "user")
@@ -58,6 +59,9 @@ model Project {
   userId  Int @map("user_id")
   balance Int
 
+  smsCommited   Int @default(0) @map("sms_commited")
+  emailCommited Int @default(0) @map("email_commited")
+
   Plan    Plan      @relation(fields: [planId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   User    User      @relation(fields: [userId], references: [id], onDelete: Restrict, onUpdate: Restrict)
   Service Service[]
@@ -65,6 +69,8 @@ model Project {
   createdAt    DateTime       @default(now()) @map("created_at")
   deletedAt    DateTime?      @map("deleted_at")
   Subscription Subscription[]
+  OtpTemplate  OtpTemplate[]
+  OtpHistory   OtpHistory[]
 
   @@index([sid, publicId])
   @@map(name: "project")
@@ -132,7 +138,7 @@ model Pricing {
   base       Int
   free       Int
   standard   Int
-  bussiness  Int
+  business   Int
   enterprise Int
 
   createdAt DateTime  @default(now()) @map("created_at")
@@ -155,4 +161,52 @@ model AuthRequest {
 
   @@index([userId, publicId])
   @@map(name: "auth_request")
+}
+
+model OtpTemplate {
+  id       Int    @id @default(autoincrement())
+  publicId String @unique @map("public_id")
+
+  projectId Int? @map("project_id")
+
+  orgin   String
+  unicode String
+  en      String
+
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+
+  Project Project? @relation(fields: [projectId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([id, publicId])
+  @@map(name: "otp_template")
+}
+
+model OtpHistory {
+  id        Int    @id @default(autoincrement())
+  publicId  String @unique @map("public_id")
+  projectId Int    @map("project_id")
+
+  updatedAt DateTime  @default(now()) @map("updated_at")
+  createdAt DateTime  @default(now()) @map("created_at")
+  deletedAt DateTime? @map("deleted_at")
+  createdBy Int?      @map("created_by")
+
+  type    String // email||sms
+  status  String // PENDING|EXPIRED|DONE|FAILURE
+  error   String?
+  pricing Int     @default(0)
+
+  carrier String
+  country String
+
+  otp     String
+  message String?
+
+  Project Project @relation(fields: [projectId], references: [id], onDelete: Restrict, onUpdate: Restrict)
+  User    User?   @relation(fields: [createdBy], references: [id], onDelete: Restrict, onUpdate: Restrict)
+
+  @@index([id, publicId])
+  @@map(name: "otp_history")
 }

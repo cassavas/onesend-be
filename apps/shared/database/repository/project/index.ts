@@ -25,11 +25,14 @@ class ProjectRepository {
     userId: number,
     publicId: string
   ): Promise<{
+    id: number;
     publicId: string;
     name: string;
     sid: string;
     authId: string;
     balance: number;
+    smsCommited: number;
+    emailCommited: number;
     Plan: {
       publicId: string;
       name: string;
@@ -43,11 +46,14 @@ class ProjectRepository {
         }
       },
       select: {
+        id: true,
         publicId: true,
         name: true,
         sid: true,
         authId: true,
         balance: true,
+        smsCommited: true,
+        emailCommited: true,
         Plan: {
           select: {
             publicId: true,
@@ -56,6 +62,67 @@ class ProjectRepository {
         }
       }
     });
+  }
+
+  public async getProjectById(id: number): Promise<{
+    publicId: string;
+    name: string;
+    sid: string;
+    authId: string;
+    balance: number;
+    smsCommited: number;
+    emailCommited: number;
+    Plan: {
+      publicId: string;
+      name: string;
+    };
+  } | null> {
+    return global.prisma.project.findUnique({
+      where: {
+        id
+      },
+      select: {
+        publicId: true,
+        name: true,
+        sid: true,
+        authId: true,
+        balance: true,
+        smsCommited: true,
+        emailCommited: true,
+        Plan: {
+          select: {
+            publicId: true,
+            name: true
+          }
+        }
+      }
+    });
+  }
+
+  public async processDebitBalance(projectId: number, amount: number): Promise<void> {
+    await global.prisma.project.update({
+      where: { id: projectId },
+      data: {
+        balance: {
+          decrement: amount
+        }
+      }
+    });
+  }
+
+  public async processDecreaseSmsCommited(projectId: number) {
+    await global.prisma.project.update({
+      where: { id: projectId },
+      data: {
+        smsCommited: {
+          decrement: 1
+        }
+      }
+    });
+  }
+
+  public async getSmsServiceFree(alpha3: string, carrier: string) {
+    return global.prisma.pricing.findFirst({ where: { countryCode: alpha3, carrierName: carrier } });
   }
 }
 

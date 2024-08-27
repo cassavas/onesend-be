@@ -26,6 +26,10 @@ export const responseError = (e: Error | any, req: express.Request, res: express
         status = 403;
         res.sendStatus(403);
         break;
+      case 'INTERNAL':
+        status = 500;
+        res.sendStatus(500);
+        break;
     }
   } else {
     status = 500;

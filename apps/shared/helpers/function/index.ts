@@ -1,5 +1,6 @@
 import { emailRegex } from 'shared/types/const';
-import { nanoid } from 'nanoid';
+import { customAlphabet, nanoid } from 'nanoid';
+import parsePhoneNumber, { PhoneNumber } from 'libphonenumber-js';
 
 export const jsonToMarkdown = (jsonObj: any, depth = 0) => {
   let markdown = '';
@@ -37,4 +38,23 @@ export const newPublicId = (): string => {
 
 export const newAppId = () => {
   return nanoid(60);
+};
+
+export const newOtp = (size: number) => {
+  return customAlphabet('1234567890', size)().toString();
+};
+
+export const phoneInformation = (_phone: string): PhoneNumber | undefined => {
+  return parsePhoneNumber(_phone);
+};
+
+export const getSampleOtpTemplate = (otp: string, type: 'vi' | 'vi_uni' | 'en') => {
+  switch (type) {
+    case 'vi':
+      return `Ma xac thuc [SAMPLE TEST] cua ban la: ${otp}`;
+    case 'vi_uni':
+      return `Mã xác thực [SAMPLE TEST] của bạn là: ${otp}`;
+    case 'en':
+      return `Your [SAMPLE TEST] verification code is: ${otp}`;
+  }
 };

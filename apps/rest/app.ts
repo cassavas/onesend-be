@@ -22,13 +22,14 @@ import { postUserProfileHandler } from 'rest/controler/user/post-user-profile-ha
 import { postSetupProjectHandler } from 'rest/controler/project/post-setup-project-handler';
 import { getProjectHandler } from 'rest/controler/project/get-project-handler';
 import { getListProjectHandler } from 'rest/controler/project/get-list-project-handler';
+import { postDemoSmsHandler } from 'rest/controler/sms/post-demo-sms-handler';
 
 const app = express();
 
 app.set('trust proxy', 'loopback');
 app.all('*', cors);
 app.all('*', apiLimiter);
-app.use(bodyParser.json({ limit: '1mb' }));
+app.use(bodyParser.json({ limit: '5mb' }));
 
 app.use(
   session({
@@ -71,6 +72,7 @@ app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjec
 app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));
 app.get('/v1/projects', context, auth, asyncHandler(catchHandler(getListProjectHandler)));
 
-//global APIs
+app.get('/v1/sms/callback-receiver');
+app.post('/v1/service/sms/demo', context, auth, asyncHandler(catchHandler(postDemoSmsHandler)));
 
 export default app;
