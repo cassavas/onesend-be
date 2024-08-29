@@ -24,6 +24,10 @@ import { getProjectHandler } from 'rest/controler/project/get-project-handler';
 import { getListProjectHandler } from 'rest/controler/project/get-list-project-handler';
 import { postDemoSmsHandler } from 'rest/controler/sms/post-demo-sms-handler';
 
+import memoryStore from 'memorystore';
+
+const MemoryStore = memoryStore(session);
+
 const app = express();
 
 app.set('trust proxy', 'loopback');
@@ -34,7 +38,12 @@ app.use(bodyParser.json({ limit: '5mb' }));
 app.use(
   session({
     secret: process.env.SECRET_TOKEN ?? '',
-    resave: false,
+
+    cookie: { maxAge: 86400000 },
+    store: new MemoryStore({
+      checkPeriod: 86400000
+    }),
+    resave: true,
     saveUninitialized: true
   })
 );
@@ -52,7 +61,7 @@ passport.deserializeUser(function (user: any, done) {
 });
 
 app.get('/v1/health', (req: express.Request, res: express.Response) => {
-  res.send({ smg: 'live' });
+  res.send({ smg: 'lives' });
 });
 
 app.get('/auth/google', googleAuth);
@@ -72,7 +81,7 @@ app.post('/v1/project', context, auth, asyncHandler(catchHandler(postSetupProjec
 app.get('/v1/project/:publicId', context, auth, asyncHandler(catchHandler(getProjectHandler)));
 app.get('/v1/projects', context, auth, asyncHandler(catchHandler(getListProjectHandler)));
 
-app.get('/v1/sms/callback-receiver');
+app.get('/v1/payment/callback-receiver/:id');
 app.post('/v1/service/sms/demo', context, auth, asyncHandler(catchHandler(postDemoSmsHandler)));
 
 export default app;

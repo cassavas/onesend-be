@@ -1,0 +1,93 @@
+---
+- name: Configure Nginx for HTTPS only with domain restriction and auto-redirect from HTTP
+  hosts: webservers
+  become: true
+
+  tasks:
+    - name: Install Nginx
+      apt:
+        name: nginx
+        state: present
+        update_cache: yes
+
+    - name: Create Nginx configuration file
+      copy:
+        dest: /etc/nginx/sites-available/default
+        content: |
+          # Deny access by IP address
+          server {
+              listen 80 default_server;
+              listen [::]:80 default_server;
+              return 444;
+          }
+
+          server {
+              listen 443 ssl default_server;
+              listen [::]:443 ssl default_server;
+          
+              ssl_certificate /etc/letsencrypt/live/onesend.vn/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/onesend.vn/privkey.pem;
+          
+              return 444;
+          }
+
+          # Redirect HTTP to HTTPS for your domain
+          server {
+              listen 80;
+              server_name api.onesend.vn;
+
+              # Redirect all HTTP requests to HTTPS
+              return 301 https://$host$request_uri;
+          }
+
+          # HTTPS server block for your domain
+          server {
+              listen 443 ssl;
+              server_name api.onesend.vn;
+
+              # SSL Configuration
+              ssl_certificate /etc/letsencrypt/live/onesend.vn/fullchain.pem;
+              ssl_certificate_key /etc/letsencrypt/live/onesend.vn/privkey.pem;
+              ssl_protocols TLSv1.2 TLSv1.3;
+              ssl_ciphers HIGH:!aNULL:!MD5;
+
+              location / {
+                  proxy_pass http://localhost:3000;
+                  proxy_set_header Host $host;
+                  proxy_set_header X-Real-IP $remote_addr;
+                  proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+                  proxy_set_header X-Forwarded-Proto $scheme;
+              }
+          }
+        owner: root
+        group: root
+        mode: '0644'
+      notify:
+        - Restart Nginx
+
+    - name: Remove default symlink from sites-enabled
+      file:
+        path: /etc/nginx/sites-enabled/default
+        state: absent
+      notify:
+        - Restart Nginx
+
+    - name: Enable Nginx configuration
+      file:
+        src: /etc/nginx/sites-available/default
+        dest: /etc/nginx/sites-enabled/default
+        state: link
+      notify:
+        - Restart Nginx
+
+    - name: Test Nginx configuration
+      command: nginx -t
+      notify:
+        - Restart Nginx
+
+  handlers:
+    - name: Restart Nginx
+      service:
+        name: nginx
+        state: restarted
+# SSL/TLS encryption Full (strict)
